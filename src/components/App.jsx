@@ -1,43 +1,55 @@
 import React, { Component } from "react";
-import Form from "./Phonebook/PhonebookForm";
-import PhoneBookList from "./PhonebookList/PhoneBookList";
+import { useState, useEffect } from "react";
 import { nanoid } from 'nanoid'
-import Filter from "./Filter/Filter";
+import useLocalStorage from "./hooks/useLocalStorage";
 import Notiflix from 'notiflix';
 
 
 
-export default class App extends Component  {
-  state = {
-    contacts:[
-    ],
-    filter: '',
+const App = () => {
+
+  const [name, setName] = useLocalStorage('name', '')
+  const [number, setNumber] = useLocalStorage('number', '')
+  const [id, setId] = useState('')
+  // const [filter, setFilter] = useState('')
+  const [contacts, setContacts] = useState ([name, number, id])
+
+
+  const handlChange = event => {
+    console.log(event.target.name);
+    const { name, value } = event.target;
+
+    switch (name){
+    case 'name': 
+      setName (value)
+      break;
+
+      case 'number': 
+      setNumber (value)
+      break;
+
+      default:
+        return;
   }
-
-
- 
-  addContact = ({name, number}) => {
-    
-    const contact = {
-      id: nanoid(),
-      name,
-      number,
-          };
+}
   
-    const checkName = this.state.contacts.map(el=>el.name).includes(contact.name)
-    const checkNumbers = this.state.contacts.map(el=>el.number).includes(contact.number)
-    
+
+const  addContact = ({name, number}) => {
+
+  const checkName = contacts.map(el=>el.name).includes(name)
+    const checkNumbers = contacts.map(el=>el.number).includes(number)
+
     if (checkName && checkNumbers) {
       Notiflix.Report.failure( 
-        `${contact.name} and ${contact.number} is already in contacts`);
+        `${name} and ${number} is already in contacts`);
       return
     } else if (checkName) {
       Notiflix.Report.failure( 
-        `${contact.name} is already in contacts`);
+        `${name} is already in contacts`);
       return
     } else if (checkNumbers){
       Notiflix.Report.failure( 
-        `${contact.number} is already in contacts`);
+        `${number} is already in contacts`);
       return
     }
 
@@ -47,84 +59,70 @@ export default class App extends Component  {
   };
 
 
-  deleteContact = contactId => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
-    }));
-  };
-
-
-  toggleCompleted = contactId => {
-    this.setState(({ contacts }) => ({
-      contacts: contacts.map(contact =>
-        contact.id === contactId ? { ...contact, completed: !contact.completed } : contact,
-      ),
-    }));
-  };
-
-
-  changeFilter = e => {
-    this.setState({ filter: e.currentTarget.value });
-  };
-
-
-  formSubmitHandler = data =>{
-    console.log(data);
-    data.id = nanoid();
-    this.state.contacts.push(data)
-  }
-
-
-  getVisibleContacts = () => {
-    const { filter, contacts } = this.state;
-    const normalizedFilter = filter.toLowerCase();
-
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedFilter),)
-    
-  };
-  
-  componentDidMount(){
-
-  const contacts = localStorage.getItem('contacts')
-  const parsedContacts = JSON.parse(contacts)
-  if(parsedContacts){
-    this.setState({contacts: parsedContacts})
-  }
-  
-
-}
-
-  componentDidUpdate(prevPops, prevState){
-
-    if(this.state.contacts !== prevState.contacts){
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts))
-
-    }
 
 
 
-console.log(prevState);
-console.log(this.state);
-
-  }
-
-
-render(){
   return (
     <div> 
   <h2>Phonebook</h2>
 
-    <Form onSubmit={this.addContact}></Form>
-    
-    <Filter value={this.state.filter} onChange={this.changeFilter} />
+  <form 
+          >
+      
+    <label>
+    Name
+      <input
 
-    <h2>Contacts</h2>
-    
-    <PhoneBookList 
-    contacts={this.state.contacts} 
-    visibleContacts={this.getVisibleContacts()}onDeleteContacts={this.deleteContact} />
-</div>
-  );
-}
-};
+      onChange={handlChange}
+      value={name}
+      id={2}
+    type="text"
+    name="name"
+    // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+    title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+   required
+ />
+ </label>
+ <label >
+  Number
+ <input
+ 
+ value={number}
+ onChange={handlChange}
+ id={1}
+  type="tel"
+  name="number"
+  // pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+  title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+  required
+/>
+</label>
+ <button type="submit" >Add contact</button>
+ 
+</form>
+<label >
+    <samp >Find contacts by name</samp> 
+    <input
+    type="text" 
+    />
+  </label>
+<div>
+      
+      <ul>
+      
+      <li 
+      key={id}>{name}: {number}
+       <button
+          type="button"
+         
+          
+        >
+          Удалить
+        </button></li> 
+  
+</ul>
+</div>  
+  </div> )}
+
+export default App
+  
