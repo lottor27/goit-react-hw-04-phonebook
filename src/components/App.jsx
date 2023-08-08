@@ -65,11 +65,6 @@ const  deleteContact = contactId =>
   };
 
 
- const  formSubmitHandler = data =>{
-    console.log(data);
-    data.id = nanoid();
-    setContacts(contacts.push(data))
-  }
 
 
 const getVisibleContacts = () => {
