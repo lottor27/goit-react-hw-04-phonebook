@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid'
 import css from './Phonebook.module.css'
 
 
-const Form = (addContact ) => {
+const Form = ({addContact} ) => {
  const  nameInputId = nanoid();
  const numberInputId = nanoid();
 
@@ -22,7 +22,7 @@ if (name === 'name') setName(value);
 
 const handleSabmit = e => {
     e.preventDefault();
-    addContact(name, number);
+    addContact({name, number});
     reset()
 }
 
