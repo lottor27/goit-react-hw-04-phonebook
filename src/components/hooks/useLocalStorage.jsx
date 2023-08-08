@@ -1,14 +1,17 @@
-import { useState, useEffect } from "react";
-
-export default function useLocalStorage (key, defaultValue){
-
-    const [state, setState] = useState(()=> {
-        return JSON.parse(window.localStorage.getItem(key)) ?? defaultValue
-    })
-
-    useEffect(()=>{
-        window.localStorage.setItem(key, JSON.stringify(state));
-    }, [key, state]);
-
-    return [state, setState]
+export const saveToLocalStorage = (key, value) => {
+    try {
+        const serializedState = JSON.stringify(value);
+        localStorage.setItem(key, serializedState);
+    } catch (error) {
+        console.error("Set state error: ", error.message);
     }
+};
+
+export const loadContacts = key => {
+    try {
+        const serializedState = localStorage.getItem(key);
+        return serializedState === null ? undefined : JSON.parse(serializedState);
+    } catch (error) {
+        console.error("Get state error: ", error.message);
+    }
+};

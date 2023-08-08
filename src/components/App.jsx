@@ -5,24 +5,27 @@ import PhoneBookList from "./PhonebookList/PhoneBookList";
 import { nanoid } from 'nanoid'
 import Filter from "./Filter/Filter";
 import Notiflix from 'notiflix';
-// import { saveToLocalStorage, loadContacts } from "./hooks/useLocalStorage";
+import { saveToLocalStorage, loadContacts } from "./hooks/useLocalStorage";
 
 
 
 function App () {
  
-const [contacts, setContacts] = useState([{id: "id-1", name: "Rosie Simpson", number: "459-12-56"}]);
+const [contacts, setContacts] = useState([]);
 const [filter, setFilter] = useState('')
 
 
 
 useEffect(() => {
-  setContacts(JSON.parse(localStorage.getItem('contacts')) || []);
+  const savedContacts = loadContacts('contacts');
+  if (savedContacts && savedContacts.length > 0) {
+    setContacts(savedContacts);
+  }
 }, []);
 
 
 useEffect(() => {
-  localStorage.setItem('contacts', JSON.stringify(contacts));
+  saveToLocalStorage('contacts', contacts);
 }, [contacts]);
 
 
