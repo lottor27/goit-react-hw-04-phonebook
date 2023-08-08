@@ -65,11 +65,11 @@ const  deleteContact = contactId =>
   };
 
 
-//  const  formSubmitHandler = data =>{
-//     console.log(data);
-//     data.id = nanoid();
-//     this.state.contacts.push(data)
-//   }
+ const  formSubmitHandler = data =>{
+    console.log(data);
+    data.id = nanoid();
+    setContacts(contacts.push(data))
+  }
 
 
 const getVisibleContacts = () => {
@@ -86,7 +86,7 @@ const getVisibleContacts = () => {
     <div> 
     <h2>Phonebook</h2>
 
-    <Form onSubmit={addContact}></Form>
+    <Form addContact={addContact}></Form>
     
     <Filter value={filter} onChange={changeFilter} />
 
