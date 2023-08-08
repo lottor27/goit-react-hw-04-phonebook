@@ -22,7 +22,7 @@ if (name === 'name') setName(value);
 
 const handleSabmit = e => {
     e.preventDefault();
-    addContact({name, number});
+    addContact(name, number);
     reset()
 }
 
